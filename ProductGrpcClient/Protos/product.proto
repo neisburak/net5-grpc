@@ -1,0 +1,60 @@
+syntax = "proto3"; // versiyon
+
+option csharp_namespace = "ProductGrpcClient.Protos"; // opsiyonel namespace
+
+import "google/protobuf/empty.proto"; // well-known type
+import "google/protobuf/timestamp.proto"; // well-known type
+
+package products;
+
+// servis sözleşmesi
+service ProductProtoService {
+    rpc GetProduct (GetProductRequest) returns (ProductModel);
+    rpc GetProducts (google.protobuf.Empty) returns (stream ProductModel);
+
+    rpc InsertProduct (InsertProductRequest) returns (ProductModel);
+    rpc BulkInsertProduct (stream ProductModel) returns (BulkInsertProductResponse);
+    rpc UpdateProduct (UpdateProductRequest) returns (ProductModel);
+    rpc RemoveProduct (RemoveProductRequest) returns (RemoveProductResponse);
+}
+
+// servis rpc'lerinde kullanılacak tip tanımlamaları
+message GetProductRequest {
+    int32 id = 1;
+}
+
+enum ProductStatus {
+    None = 0;
+    Low = 1;
+    InStock = 2;
+}
+
+message ProductModel {
+    int32 id = 1;
+    string name = 2;
+    string detail = 3;
+    float price = 4;
+    ProductStatus status = 5;
+    google.protobuf.Timestamp createdOn = 6;
+}
+
+message InsertProductRequest {
+    ProductModel product = 1;
+}
+
+message BulkInsertProductResponse {
+    bool success = 1;
+    int32 inserted = 2;
+}
+
+message UpdateProductRequest {
+    ProductModel product = 1;
+}
+
+message RemoveProductRequest {
+    int32 id = 1;
+}
+
+message RemoveProductResponse {
+    bool success = 1;
+}
